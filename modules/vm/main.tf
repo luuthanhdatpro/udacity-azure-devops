@@ -3,14 +3,14 @@ resource "azurerm_virtual_machine" "vm" {
     location                    = var.location
     resource_group_name         = var.resource_group_name
     network_interface_ids       = var.network_interface_ids 
-    vm_size                     = "Standard_A1_v2"
+    vm_size                     = "${var.vm_size}"
     os_profile_linux_config {
       disable_password_authentication = false
     }
     os_profile {
       computer_name  = "server"
-      admin_password = "Pr@yTh3Lord"
-      admin_username = "thanhlc"
+      admin_password = "${var.admin_password}"
+      admin_username = "${var.admin_username}"
     }
     storage_os_disk {
       name              = "osdisk"

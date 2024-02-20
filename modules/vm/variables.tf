@@ -28,3 +28,18 @@ variable "platform_update_domain_count" {
   description   = "Update domain count"
   default       = 1
 }
+
+variable "admin_password" {
+  description = "Password of admin"
+  default     = "Ud4c!ty"
+}
+
+variable "admin_username" {
+  description = "Password of admin"
+  default     = "udacity"
+}
+
+variable "vm_size" {
+  description = "VM's size"
+  default     = "Standard_A1_v2"
+}
