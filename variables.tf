@@ -1,21 +1,17 @@
 variable "resource_group_name" {
-  description = "Name of resource group"
-  default     = null
+  description = "Name of the resource group"
+  default = "Udacity"
 }
 
 variable "location" {
-  description = "Location"
-  default     = null
+  description = "Location of the resource group"
+  default = "southeastasia"
 }
 
-variable "network_interface_ids" {
-  description = "Network interface"
-  default = null
-}
 
 variable "image_id" {
   description = "Image ID"
-  default = null
+  default = "/subscriptions/894dff76-a758-451b-9ab3-9af2045d5e1f/resourceGroups/Udacity/providers/Microsoft.Compute/images/demoimage"
 }
 
 variable "platform_fault_domain_count" {

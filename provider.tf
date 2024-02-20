@@ -6,8 +6,8 @@ terraform {
     }
   }
   backend "azurerm" {
-      resource_group_name  = "tfstate"
-      storage_account_name = "<storage-account-to-store-state>"
+      resource_group_name  = "Udacity"
+      storage_account_name = "tfstate1524733304"
       container_name       = "tfstate"
       key                  = "terraform.tfstate"
   }
