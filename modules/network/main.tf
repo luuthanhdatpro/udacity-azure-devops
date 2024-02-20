@@ -18,7 +18,7 @@ resource "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_network_interface" "netinterface" {
-  name                = "example-nic"
+  name                = "nic"
   location            = var.location
   resource_group_name = var.resource_group_name
 
@@ -73,6 +73,7 @@ resource "azurerm_public_ip" "PIP" {
   resource_group_name = var.resource_group_name
   location            = var.location
   allocation_method   = "Static"
+  sku                 = "Standard"
 
   tags = {
     env = "dev"
@@ -83,7 +84,7 @@ resource "azurerm_lb" "applb" {
   name                = "AppLB"
   location            = var.location
   resource_group_name = var.resource_group_name
-
+  sku                 = "Standard"
   frontend_ip_configuration {
     name                 = "PublicIPAddress"
     public_ip_address_id = azurerm_public_ip.PIP.id
@@ -96,7 +97,7 @@ resource "azurerm_lb_backend_address_pool" "addpool" {
 }
 
 resource "azurerm_lb_backend_address_pool_address" "addpooladd" {
-  name                    = "example"
+  name                    = "address-pool-address"
   backend_address_pool_id = azurerm_lb_backend_address_pool.addpool.id
   virtual_network_id      = azurerm_virtual_network.appvnet.id
   ip_address              = azurerm_network_interface.netinterface.private_ip_address
