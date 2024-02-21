@@ -8,6 +8,10 @@ variable "location" {
   default = "southeastasia"
 }
 
+variable "vm_count" {
+  description = "Number of NIC"
+  default = 2
+}
 
 variable "image_id" {
   description = "Image ID"

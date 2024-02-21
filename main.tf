@@ -27,7 +27,8 @@ resource "azurerm_subnet" "subnet" {
 }
 
 resource "azurerm_network_interface" "netinterface" {
-  name                = "nic"
+  count = var.vm_count
+  name                = "nic-${count.index}"
   location            = azurerm_resource_group.demorg.location
   resource_group_name = azurerm_resource_group.demorg.name
 
@@ -49,29 +50,15 @@ resource "azurerm_network_security_group" "sec-group" {
   resource_group_name = azurerm_resource_group.demorg.name
 }
 
-resource "azurerm_network_security_rule" "outboundrule" {
-  name                        = "allow-inbound"
-  priority                    = 100
-  direction                   = "Outbound"
-  access                      = "Allow"
-  protocol                    = "Tcp"
-  source_port_range           = "*"
-  destination_port_range      = "*"
-  source_address_prefix       = "*"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.demorg.name
-  network_security_group_name = azurerm_network_security_group.sec-group.name
-}
-
-resource "azurerm_network_security_rule" "inboundrule" {
-  name                        = "allow-inbound"
+resource "azurerm_network_security_rule" "denyinboundrule" {
+  name                        = "deny-inbound-internet"
   priority                    = 100
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "Tcp"
   source_port_range           = "*"
   destination_port_range      = "*"
-  source_address_prefix       = "*"
+  source_address_prefix       = "Internet"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.demorg.name
   network_security_group_name = azurerm_network_security_group.sec-group.name
@@ -106,28 +93,30 @@ resource "azurerm_lb_backend_address_pool" "addpool" {
 }
 
 resource "azurerm_lb_backend_address_pool_address" "addpooladd" {
-  name                    = "address-pool-address"
+  count = var.vm_count
+  name                    = "address-pool-address-${count.index}"
   backend_address_pool_id = azurerm_lb_backend_address_pool.addpool.id
   virtual_network_id      = azurerm_virtual_network.appvnet.id
-  ip_address              = azurerm_network_interface.netinterface.private_ip_address
+  ip_address              = azurerm_network_interface.netinterface[count.index].private_ip_address
 }
 
 resource "azurerm_virtual_machine" "vm" {
-    name                        = "Udacity-prj-vm"
+    count = var.vm_count
+    name                        = "Udacity-prj-vm-${count.index}"
     location                    = azurerm_resource_group.demorg.location
     resource_group_name         = azurerm_resource_group.demorg.name
-    network_interface_ids       = [azurerm_network_interface.netinterface.id]
+    network_interface_ids       = [azurerm_network_interface.netinterface[count.index].id]
     vm_size                     = "${var.vm_size}"
     os_profile_linux_config {
       disable_password_authentication = false
     }
     os_profile {
-      computer_name  = "server"
+      computer_name  = "server-${count.index}"
       admin_password = "${var.admin_password}"
       admin_username = "${var.admin_username}"
     }
     storage_os_disk {
-      name              = "osdisk"
+      name              = "osdisk-${count.index}"
       caching           = "ReadWrite"
       create_option     = "FromImage"
       managed_disk_type = "Standard_LRS"
